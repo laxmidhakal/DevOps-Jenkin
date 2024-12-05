@@ -49,12 +49,36 @@ pipeline {
         }
     }
 
-    post {
+    post { 
+          always { 
+            mail to: 'laxmidhakal159@gmail.com',
+            subject: "Job '${JOB_NAME}' (${BUILD_NUMBER}) is waiting for input",
+            body: "Please go to this ${BUILD_URL} and verify the build"
+          }
+
         success {
-            echo "Build and deployment successful!"
+            mail bcc: '', body: """Hello Team,
+
+            Build #$BUILD_NUMBER is successful, please go through this url
+
+             $BUILD_URL
+
+            and verify the details.
+
+            Regards,
+            TechAxis DevOps Team""", cc: '', from: '', replyTo: '', subject: 'BUILD SUCCESS NOTIFICATION', to: 'laxmidhakal159@gmail.com'
         }
         failure {
-            echo "Build or deployment failed. Please check logs."
+            mail bcc: '', body: """Hello Team,
+            
+          Build #$BUILD_NUMBER is unsuccessful, please go through this url
+
+          $BUILD_URL
+
+          and verify the details.
+
+          Regards,
+          Techaxis DevOps Team""", cc: '', from: '', replyTo: '', subject: 'BUILD FAILED NOTIFICATION', to: 'laxmidhakal159@gmail.com'
         }
     }
 }
