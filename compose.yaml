@@ -1,0 +1,6 @@
+version: '3.8'
+services:
+  app:
+    image: laxmidhakal/python-app:${BUILD_NUMBER} # Docker image reference
+    ports:
+      - "5000:5000"
