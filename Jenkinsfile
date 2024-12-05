@@ -6,11 +6,6 @@ pipeline {
         DOCKER_IMAGE = 'laxmidhakal/python-app' // Replace with your Docker Hub repository
     }
     stages {
-        stage('Build Application') {
-            steps {
-                echo "No specific build step required for Python. Proceeding to Docker image creation..."
-            }
-        }
 
         stage('Create Docker Image') {
             steps {
@@ -42,7 +37,6 @@ pipeline {
             steps {
                 echo "Starting containers with Docker Compose..."
                 sh '''
-                sed -i 's|${BUILD_NUMBER}|'$BUILD_NUMBER'|g' compose.yaml
                 docker compose up -d
                 '''
             }
