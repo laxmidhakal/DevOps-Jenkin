@@ -3,7 +3,7 @@ pipeline {
         label 'ubuntu-node'
     }
     environment {
-        DOCKER_IMAGE = 'laxmidhakal/python-app' // Replace with your Docker Hub repository
+        DOCKER_IMAGE = 'laxmidhakal/python-app' 
     }
     stages {
 
