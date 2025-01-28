@@ -1,7 +1,5 @@
 pipeline {
-    agent {
-        label 'ubuntu-node'
-    }
+   
     environment {
         DOCKER_IMAGE = 'laxmidhakal/python-app' 
     }
