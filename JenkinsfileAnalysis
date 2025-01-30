@@ -12,7 +12,7 @@ pipeline {
             steps {
                 echo "Building Docker image for Python application..."
                 sh '''
-                docker build -t localpythonimage:$BUILD_NUMBER .
+                docker build -t ${DOCKER_IMAGE}:$BUILD_NUMBER .
                 '''
             }
         }
@@ -68,7 +68,7 @@ pipeline {
                 }
                 echo "Pushing Docker image to Docker Hub..."
                 sh '''
-                docker tag localpythonimage:$BUILD_NUMBER ${DOCKER_IMAGE}:$BUILD_NUMBER
+                docker tag ${DOCKER_IMAGE}:$BUILD_NUMBER ${DOCKER_IMAGE}:$BUILD_NUMBER
                 docker push ${DOCKER_IMAGE}:$BUILD_NUMBER
                 '''
             }
