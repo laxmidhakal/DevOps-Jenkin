@@ -4,6 +4,7 @@ pipeline {
     }
     environment {
         DOCKER_IMAGE = 'laxmidhakal/python-app' 
+        scannerHome = tool 'sonar7.0'
     }
     stages {
 
@@ -13,6 +14,20 @@ pipeline {
                 sh '''
                 docker build -t localpythonimage:$BUILD_NUMBER .
                 '''
+            }
+        }
+
+        stage('Sonar Analysis') {
+            steps {
+                withSonarQubeEnv('sonar') {
+                    sh '''${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=java-tomcat-sample \
+                        -Dsonar.projectName=java-tomcat-sample \
+                        -Dsonar.projectVersion=4.0 \
+                        -Dsonar.sources=jenkins/java-tomcat-sample/src/ \
+                        -Dsonar.junit.reportsPath=target/surefire-reports/ \
+                        -Dsonar.jacoco.reportsPath=target/jacoco.exec \
+                        -Dsonar.java.checkstyle.reportPaths=target/checkstyle-result.xml'''
+                }
             }
         }
 
