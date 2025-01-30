@@ -17,7 +17,7 @@ pipeline {
             }
         }
 
-         stage('Scan Docker Image') {
+         stage('Run Trivy Scan') {
             steps {
                 script {
                     // Run Trivy to scan the Docker image
@@ -38,9 +38,6 @@ pipeline {
                 }
             }
         }
-    }
-
-         
 
     //     stage('Sonar Analysis') {
     //         steps {
