@@ -43,8 +43,8 @@ pipeline {
                         sh "${scannerHome}/bin/sonar-scanner \
                             -D sonar.projectVersion=1.0-SNAPSHOT \
                             -D sonar.projectName=sample-app \
-                            -D sonar.projectBaseDir=/var/lib/jenkins/workspace/Snyk-Testing/snyk-code-container-scan/appcode \
                             -D sonar.projectKey=sample-app \
+                            -D sonar.sources=. \
                             -D sonar.sourceEncoding=UTF-8 \
                             -D sonar.language=python \
                             -D sonar.host.url=http://192.168.33.10:9000"
