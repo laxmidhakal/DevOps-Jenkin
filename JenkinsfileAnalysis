@@ -36,14 +36,14 @@ pipeline {
         stage('SonarQube Code Analysis') {
             steps {
                 dir("${WORKSPACE}"){
-                // Run SonarQube analysis for Python
+               
                 script {
                     def scannerHome = tool name: 'sonar7.0', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
                     withSonarQubeEnv('sonar') {
                         sh "${scannerHome}/bin/sonar-scanner \
                             -D sonar.projectVersion=1.0-SNAPSHOT \
-                            -D sonar.projectName=sample-app \
-                            -D sonar.projectKey=sample-app \
+                            -D sonar.projectName=python-app \
+                            -D sonar.projectKey=python-app \
                             -D sonar.sources=. \
                             -D sonar.sourceEncoding=UTF-8 \
                             -D sonar.language=python \
