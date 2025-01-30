@@ -22,15 +22,16 @@ pipeline {
                 withSonarQubeEnv('sonar') {
                 
 
-                     sh '''${scannerHome}/bin/sonar-scanner \
-                      -Dsonar.projectKey=simple-python-app \
-                     -Dsonar.projectName=Simple Python App \
-                     -Dsonar.projectVersion=1.0 \
-                    -Dsonar.sources=./src/ \
-                    -Dsonar.python.version=3.x \
-                    -Dsonar.python.coverage.reportPaths=coverage-reports/coverage.xml \
-                    -Dsonar.junit.reportsPath=./target/test-logs/ \
-                    -Dsonar.sourceEncoding=UTF-8'''    
+                     sh '''
+                        sonar-scanner \
+                            -Dsonar.projectKey=simple-python-app \
+                            -Dsonar.projectName=Simple Python App \
+                            -Dsonar.projectVersion=1.0 \
+                            -Dsonar.sources=./src/ \
+                            -Dsonar.python.coverage.reportPaths=coverage-reports/coverage.xml \
+                            -Dsonar.junit.reportsPath=./target/test-logs/ \
+                            -Dsonar.sourceEncoding=UTF-8
+                        ''' 
                 }
             }
         }
