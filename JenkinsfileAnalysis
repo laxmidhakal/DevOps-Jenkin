@@ -29,9 +29,7 @@ pipeline {
     -Dsonar.projectName=Simple Python App \
     -Dsonar.projectVersion=1.0 \
     -Dsonar.sources=./src/ \
-    -Dsonar.python.coverage.reportPaths=coverage-reports/coverage.xml \
     -Dsonar.junit.reportsPath=./target/test-logs/ \
-    -Dsonar.sourceEncoding=UTF-8
                     '''
                 }
             }
