@@ -4,7 +4,7 @@ pipeline {
     }
     environment {
         DOCKER_IMAGE = 'laxmidhakal/python-app' 
-        // scannerHome = tool 'sonar7.0'
+        scannerHome = tool 'sonar7.0'
     }
     stages {
 
@@ -17,23 +17,25 @@ pipeline {
             }
         }
 
-        // stage('Sonar Analysis') {
-        //     steps {
-        //         withSonarQubeEnv('sonar') {
+        stage('Sonar Analysis') {
+            steps {
+                withSonarQubeEnv('sonar') {
+
+                    
                 
 
-        //            sh '''${scannerHome}/bin/sonar-scanner 
-        //                 -Dsonar.projectKey=simple-python-app \
-        //                     -Dsonar.projectName=Simple Python App \
-        //                     -Dsonar.projectVersion=1.0 \
-        //                     -Dsonar.sources=./src/ \
-        //                     -Dsonar.python.coverage.reportPaths=coverage-reports/coverage.xml \
-        //                     -Dsonar.junit.reportsPath=./target/test-logs/ \
-        //                     -Dsonar.sourceEncoding=UTF-8
-        //             '''
-        //         }
-        //     }
-        // }
+                   sh '''${scannerHome}/bin/sonar-scanner 
+                         -Dsonar.projectKey=simple-python-app \
+    -Dsonar.projectName=Simple Python App \
+    -Dsonar.projectVersion=1.0 \
+    -Dsonar.sources=./src/ \
+    -Dsonar.python.coverage.reportPaths=coverage-reports/coverage.xml \
+    -Dsonar.junit.reportsPath=./target/test-logs/ \
+    -Dsonar.sourceEncoding=UTF-8
+                    '''
+                }
+            }
+        }
 
         stage('Push to Docker Hub') {
             steps {
