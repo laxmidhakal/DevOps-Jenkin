@@ -17,45 +17,42 @@ pipeline {
             }
         }
 
-         stage('Run Trivy Scan') {
+        stage('Trivy Scan for dockerImage') {
             steps {
                 script {
-                    // Run Trivy to scan the Docker image
+                    
                     def trivyOutput = sh(script: "trivy image ${DOCKER_IMAGE}:$BUILD_NUMBER", returnStdout: true).trim()
 
-                    // Display Trivy scan results
                     println trivyOutput
-
-                    // Check if vulnerabilities were found
                     if (trivyOutput.contains("Total: 0")) {
                         echo "No vulnerabilities found in the Docker image."
                     } else {
                         echo "Vulnerabilities found in the Docker image."
-                        // You can take further actions here based on your requirements
-                        // For example, failing the build if vulnerabilities are found
-                        // error "Vulnerabilities found in the Docker image."
                     }
                 }
             }
         }
 
-    //     stage('Sonar Analysis') {
-    //         steps {
-    //             withSonarQubeEnv('sonar') {
-
-                    
-                
-
-    //                sh '''${scannerHome}/bin/sonar-scanner 
-    //                      -Dsonar.projectKey=simple-python-app \
-    // -Dsonar.projectName=Simple Python App \
-    // -Dsonar.projectVersion=1.0 \
-    // -Dsonar.sources=./src/ \
-    // -Dsonar.junit.reportsPath=./target/test-logs/ \
-    //                 '''
-    //             }
-    //         }
-    //     }
+        stage('SonarQube Code Analysis') {
+            steps {
+                dir("${WORKSPACE}"){
+                // Run SonarQube analysis for Python
+                script {
+                    def scannerHome = tool name: 'sonar7.0', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
+                    withSonarQubeEnv('sonar') {
+                        sh "${scannerHome}/bin/sonar-scanner \
+                            -D sonar.projectVersion=1.0-SNAPSHOT \
+                            -D sonar.qualityProfile=<qualityprofilename> \
+                            -D sonar.projectBaseDir=/var/lib/jenkins/workspace/Snyk-Testing/snyk-code-container-scan/appcode \
+                            -D sonar.projectKey=sample-app \
+                            -D sonar.sourceEncoding=UTF-8 \
+                            -D sonar.language=python \
+                            -D sonar.host.url=http://192.168.33.10:9000"
+                    }
+                }
+            }
+            }
+       }
 
         stage('Push to Docker Hub') {
             steps {
