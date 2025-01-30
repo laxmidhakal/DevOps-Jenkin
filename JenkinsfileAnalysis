@@ -17,23 +17,34 @@ pipeline {
             }
         }
 
-        stage('Sonar Analysis') {
+         stage('Run Trivy Scan') {
             steps {
-                withSonarQubeEnv('sonar') {
+                script {
+                    // Run Trivy scan for vulnerabilities in the Docker image
+                    sh """
+                    trivy image --exit-code 1 --severity HIGH,CRITICAL ${DOCKER_IMAGE}:$BUILD_NUMBER
+                    """
+                }
+            }
+        }
+
+    //     stage('Sonar Analysis') {
+    //         steps {
+    //             withSonarQubeEnv('sonar') {
 
                     
                 
 
-                   sh '''${scannerHome}/bin/sonar-scanner 
-                         -Dsonar.projectKey=simple-python-app \
-    -Dsonar.projectName=Simple Python App \
-    -Dsonar.projectVersion=1.0 \
-    -Dsonar.sources=./src/ \
-    -Dsonar.junit.reportsPath=./target/test-logs/ \
-                    '''
-                }
-            }
-        }
+    //                sh '''${scannerHome}/bin/sonar-scanner 
+    //                      -Dsonar.projectKey=simple-python-app \
+    // -Dsonar.projectName=Simple Python App \
+    // -Dsonar.projectVersion=1.0 \
+    // -Dsonar.sources=./src/ \
+    // -Dsonar.junit.reportsPath=./target/test-logs/ \
+    //                 '''
+    //             }
+    //         }
+    //     }
 
         stage('Push to Docker Hub') {
             steps {
