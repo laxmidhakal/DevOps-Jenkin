@@ -70,13 +70,16 @@ pipeline {
                     nexusVersion: 'nexus3',
                     protocol: 'http',
                     nexusUrl: "${NEXUS_URL}",
-                    // groupId: 'com.example',
-                    artifactId: 'python-app',
+                    groupId: 'QA',
+                    // artifactId: 'python-app',
                     version: '1.0.0',
                     repository: "${NEXUS_REPO}",
                     credentialsId: "${NEXUS_CREDENTIALS_ID}",
                     artifacts: [
-                        [artifactFile: "${ARTIFACT_NAME}", classifier: '', type: 'tar.gz']
+                        [
+                            artifactId: 'java-tomcat-sample',
+                            artifactFile: "${ARTIFACT_NAME}",
+                             classifier: '', type: 'tar.gz']
                     ]
                 )
             }
