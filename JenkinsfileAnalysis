@@ -59,8 +59,18 @@ pipeline {
        }
 
         stage('Build Python App') {
+            // steps {
+            //     sh 'tar -czvf $ARTIFACT_NAME *.py'
+            // }
+
             steps {
-                sh 'tar -czvf $ARTIFACT_NAME *.py'
+                sh 'tar -czvf python-app.tar.gz *.py'
+            }
+            post {
+              success {
+                 echo 'Now Archiving the Python App...'
+                 archiveArtifacts artifacts: 'python-app.tar.gz'
+                }
             }
         }
 
