@@ -71,15 +71,15 @@ pipeline {
                     protocol: 'http',
                     nexusUrl: "${NEXUS_URL}",
                     groupId: 'QA',
-                    
                     version: '1.0.0',
                     repository: "${NEXUS_REPO}",
                     credentialsId: "${NEXUS_CREDENTIALS_ID}",
+
                     artifacts: [
-                        [
-                            artifactId: 'python-sample',
-                            
-                             classifier: '', type: 'tar.gz']
+                        [artifactId: 'python-sample',
+                         classifier: '',
+                         file: 'python-app.tar.gz',
+                         type: 'tar.gz']
                     ]
                 )
             }
