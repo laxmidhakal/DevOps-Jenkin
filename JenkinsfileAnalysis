@@ -77,8 +77,8 @@ pipeline {
                     credentialsId: "${NEXUS_CREDENTIALS_ID}",
                     artifacts: [
                         [
-                            artifactId: 'java-tomcat-sample',
-                            artifactFile: "${ARTIFACT_NAME}",
+                            artifactId: 'python-sample',
+                            
                              classifier: '', type: 'tar.gz']
                     ]
                 )
