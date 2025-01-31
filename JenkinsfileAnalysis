@@ -59,9 +59,6 @@ pipeline {
        }
 
         stage('Build Python App') {
-            // steps {
-            //     sh 'tar -czvf $ARTIFACT_NAME *.py'
-            // }
 
             steps {
                 sh 'tar -czvf python-app.tar.gz *.py'
