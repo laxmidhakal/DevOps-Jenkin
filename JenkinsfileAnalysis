@@ -4,7 +4,11 @@ pipeline {
     }
     environment {
         DOCKER_IMAGE = 'laxmidhakal/python-app' 
-        scannerHome = tool 'sonar7.0'
+        // scannerHome = tool 'sonar7.0'
+        NEXUS_URL = 'http://172.31.23.175:8081'
+        NEXUS_REPO = 'my-python-repo'
+        NEXUS_CREDENTIALS_ID = 'nexus-credentials'
+        ARTIFACT_NAME = 'my-python-app.tar.gz'
     }
     stages {
 
@@ -53,6 +57,30 @@ pipeline {
             }
             }
        }
+
+        stage('Build Python App') {
+            steps {
+                sh 'tar -czvf $ARTIFACT_NAME *.py'
+            }
+        }
+
+          stage('Upload to Nexus') {
+            steps {
+                nexusArtifactUploader(
+                    nexusVersion: 'nexus3',
+                    protocol: 'http',
+                    nexusUrl: "${NEXUS_URL}",
+                    // groupId: 'com.example',
+                    artifactId: 'python-app',
+                    version: '1.0.0',
+                    repository: "${NEXUS_REPO}",
+                    credentialsId: "${NEXUS_CREDENTIALS_ID}",
+                    artifacts: [
+                        [artifactFile: "${ARTIFACT_NAME}", classifier: '', type: 'tar.gz']
+                    ]
+                )
+            }
+        }
 
         stage('Push to Docker Hub') {
             steps {
