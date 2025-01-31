@@ -4,10 +4,6 @@ pipeline {
     }
     environment {
         DOCKER_IMAGE = 'laxmidhakal/python-app' 
-        // scannerHome = tool 'sonar7.0'
-        
-        NEXUS_REPO = 'my-python-repo'
-        NEXUS_CREDENTIALS_ID = 'nexus-credentials'
         ARTIFACT_NAME = 'my-python-app.tar.gz'
     }
     stages {
@@ -21,10 +17,33 @@ pipeline {
             }
         }
 
+      
+
+        stage('SonarQube Code Analysis') {
+            steps {
+                dir("${WORKSPACE}"){
+               
+                 script {
+                    def scannerHome = tool name: 'sonar7.0', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
+                    withSonarQubeEnv('sonar') {
+                        sh "${scannerHome}/bin/sonar-scanner \
+                            -D sonar.projectVersion=1.0-SNAPSHOT \
+                            -D sonar.projectName=python-app \
+                            -D sonar.projectKey=python-app \
+                            -D sonar.sources=. \
+                            -D sonar.sourceEncoding=UTF-8 \
+                            -D sonar.language=python \
+                            -D sonar.host.url=http://192.168.33.10:9000"
+                        }
+                    }
+                }
+            }
+        }
+
+
         stage('Trivy Scan for dockerImage') {
             steps {
                 script {
-                    
                     def trivyOutput = sh(script: "trivy image ${DOCKER_IMAGE}:$BUILD_NUMBER", returnStdout: true).trim()
 
                     println trivyOutput
@@ -36,27 +55,6 @@ pipeline {
                 }
             }
         }
-
-        stage('SonarQube Code Analysis') {
-            steps {
-                dir("${WORKSPACE}"){
-               
-                script {
-                    def scannerHome = tool name: 'sonar7.0', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
-                    withSonarQubeEnv('sonar') {
-                        sh "${scannerHome}/bin/sonar-scanner \
-                            -D sonar.projectVersion=1.0-SNAPSHOT \
-                            -D sonar.projectName=python-app \
-                            -D sonar.projectKey=python-app \
-                            -D sonar.sources=. \
-                            -D sonar.sourceEncoding=UTF-8 \
-                            -D sonar.language=python \
-                            -D sonar.host.url=http://192.168.33.10:9000"
-                    }
-                }
-            }
-            }
-       }
 
         stage('Build Python App') {
 
@@ -79,8 +77,8 @@ pipeline {
                     nexusUrl: "98.81.95.98:8081",
                     groupId: 'QA',
                     version: '1.0.0',
-                    repository: "${NEXUS_REPO}",
-                    credentialsId: "${NEXUS_CREDENTIALS_ID}",
+                    repository: "my-python-repo",
+                    credentialsId: "nexus-credentials",
 
                     artifacts: [
                         [artifactId: 'python-sample',
