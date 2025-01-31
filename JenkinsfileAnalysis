@@ -5,7 +5,7 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'laxmidhakal/python-app' 
         // scannerHome = tool 'sonar7.0'
-        NEXUS_URL = 'http://98.81.95.98:8081'
+        
         NEXUS_REPO = 'my-python-repo'
         NEXUS_CREDENTIALS_ID = 'nexus-credentials'
         ARTIFACT_NAME = 'my-python-app.tar.gz'
@@ -76,7 +76,7 @@ pipeline {
                 nexusArtifactUploader(
                     nexusVersion: 'nexus3',
                     protocol: 'http',
-                    nexusUrl: "${NEXUS_URL}",
+                    nexusUrl: "98.81.95.98:8081",
                     groupId: 'QA',
                     version: '1.0.0',
                     repository: "${NEXUS_REPO}",
