@@ -5,7 +5,7 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'laxmidhakal/python-app' 
         // scannerHome = tool 'sonar7.0'
-        NEXUS_URL = 'http://172.31.23.175:8081'
+        NEXUS_URL = 'http://172.31.31.65:8081'
         NEXUS_REPO = 'my-python-repo'
         NEXUS_CREDENTIALS_ID = 'nexus-credentials'
         ARTIFACT_NAME = 'my-python-app.tar.gz'
@@ -58,39 +58,39 @@ pipeline {
             }
        }
 
-        // stage('Build Python App') {
+        stage('Build Python App') {
 
-        //     steps {
-        //         sh 'tar -czvf python-app.tar.gz *.py'
-        //     }
-        //     post {
-        //       success {
-        //          echo 'Now Archiving the Python App...'
-        //          archiveArtifacts artifacts: 'python-app.tar.gz'
-        //         }
-        //     }
-        // }
+            steps {
+                sh 'tar -czvf python-app.tar.gz *.py'
+            }
+            post {
+              success {
+                 echo 'Now Archiving the Python App...'
+                 archiveArtifacts artifacts: 'python-app.tar.gz'
+                }
+            }
+        }
 
-        // stage('Upload to Nexus') {
-        //     steps {
-        //         nexusArtifactUploader(
-        //             nexusVersion: 'nexus3',
-        //             protocol: 'http',
-        //             nexusUrl: "${NEXUS_URL}",
-        //             groupId: 'QA',
-        //             version: '1.0.0',
-        //             repository: "${NEXUS_REPO}",
-        //             credentialsId: "${NEXUS_CREDENTIALS_ID}",
+        stage('Upload to Nexus') {
+            steps {
+                nexusArtifactUploader(
+                    nexusVersion: 'nexus3',
+                    protocol: 'http',
+                    nexusUrl: "${NEXUS_URL}",
+                    groupId: 'QA',
+                    version: '1.0.0',
+                    repository: "${NEXUS_REPO}",
+                    credentialsId: "${NEXUS_CREDENTIALS_ID}",
 
-        //             artifacts: [
-        //                 [artifactId: 'python-sample',
-        //                  classifier: '',
-        //                  file: 'python-app.tar.gz',
-        //                  type: 'tar.gz']
-        //             ]
-        //         )
-        //     }
-        // }
+                    artifacts: [
+                        [artifactId: 'python-sample',
+                         classifier: '',
+                         file: 'python-app.tar.gz',
+                         type: 'tar.gz']
+                    ]
+                )
+            }
+        }
 
         stage('Push to Docker Hub') {
             steps {
