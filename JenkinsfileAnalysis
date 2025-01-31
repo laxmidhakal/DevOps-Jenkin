@@ -5,7 +5,7 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'laxmidhakal/python-app' 
         // scannerHome = tool 'sonar7.0'
-        NEXUS_URL = 'http://172.31.31.65:8081'
+        NEXUS_URL = 'http://98.81.95.98:8081'
         NEXUS_REPO = 'my-python-repo'
         NEXUS_CREDENTIALS_ID = 'nexus-credentials'
         ARTIFACT_NAME = 'my-python-app.tar.gz'
