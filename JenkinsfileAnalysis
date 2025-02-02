@@ -77,7 +77,8 @@ pipeline {
         stage('Create tar file for Docker Image') {
 
             steps {
-                sh "docker save -o ${DOCKER_IMAGE}_${BUILD_NUMBER}.tar ${DOCKER_IMAGE}:$BUILD_NUMBER"
+                sh "docker save -o './${DOCKER_IMAGE}_${BUILD_NUMBER}.tar' ${DOCKER_IMAGE}:${BUILD_NUMBER}"
+
                     echo "Docker image saved as ${DOCKER_IMAGE}_${BUILD_NUMBER}.tar"
             }
             post {
