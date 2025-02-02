@@ -1,4 +1,4 @@
-FROM python:3.9.14-slim-bullseye
+FROM python:3.9-slim
 WORKDIR /app
 # Create a new user and group
 RUN groupadd -r appgroup && useradd -r -g appgroup appuser
