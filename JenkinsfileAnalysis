@@ -82,7 +82,7 @@ pipeline {
 
                    sh """
                         docker save ${DOCKER_IMAGE}:${BUILD_NUMBER} -o ${FILE_NAME}
-                        gzip ${FILE_NAME}  // Compress the tar file to .tar.gz
+                        
                     """
                     echo "Docker image saved and compressed as ${FILE_NAME}"    
             }
