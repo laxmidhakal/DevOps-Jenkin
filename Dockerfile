@@ -1,4 +1,4 @@
-FROM python:3.11-slim
+FROM python:3.11-alpine
 WORKDIR /app
 # Create a new user and group
 RUN groupadd -r appgroup && useradd -r -g appgroup appuser
