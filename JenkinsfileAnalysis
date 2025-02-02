@@ -19,26 +19,26 @@ pipeline {
 
       
 
-        stage('SonarQube Code Analysis') {
-            steps {
-                dir("${WORKSPACE}"){
+        // stage('SonarQube Code Analysis') {
+        //     steps {
+        //         dir("${WORKSPACE}"){
                
-                 script {
-                    def scannerHome = tool name: 'sonar7.0', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
-                    withSonarQubeEnv('sonar') {
-                        sh "${scannerHome}/bin/sonar-scanner \
-                            -D sonar.projectVersion=1.0-SNAPSHOT \
-                            -D sonar.projectName=python-app \
-                            -D sonar.projectKey=python-app \
-                            -D sonar.sources=. \
-                            -D sonar.sourceEncoding=UTF-8 \
-                            -D sonar.language=python \
-                            -D sonar.host.url=http://192.168.33.10:9000"
-                        }
-                    }
-                }
-            }
-        }
+        //          script {
+        //             def scannerHome = tool name: 'sonar7.0', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
+        //             withSonarQubeEnv('sonar') {
+        //                 sh "${scannerHome}/bin/sonar-scanner \
+        //                     -D sonar.projectVersion=1.0-SNAPSHOT \
+        //                     -D sonar.projectName=python-app \
+        //                     -D sonar.projectKey=python-app \
+        //                     -D sonar.sources=. \
+        //                     -D sonar.sourceEncoding=UTF-8 \
+        //                     -D sonar.language=python \
+        //                     -D sonar.host.url=http://192.168.33.10:9000"
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
 
 
         stage('Trivy Scan for dockerImage') {
@@ -57,7 +57,7 @@ pipeline {
 
                     // Run Trivy scan and fail if HIGH or CRITICAL vulnerabilities exist
                    def scanStatus = sh(
-                   script: "trivy image --exit-code 1 --severity HIGH,CRITICAL ${IMAGE_NAME}:${IMAGE_TAG}",
+                   script: "trivy image --exit-code 1 --severity HIGH,CRITICAL ${DOCKER_IMAGE}:$BUILD_NUMBER",
                    returnStatus: true
                    )
                      println trivyOutput
@@ -76,12 +76,12 @@ pipeline {
         stage('Create tar file for Docker Image') {
 
             steps {
-                sh 'tar -czvf python-app.tar.gz *.py'
+                sh "docker save -o python.tar ${DOCKER_IMAGE}:$BUILD_NUMBER"
             }
             post {
               success {
                  echo 'Now Archiving the Docker Image...'
-                 archiveArtifacts artifacts: 'python-app.tar.gz'
+                 archiveArtifacts artifacts: 'python.tar.gz'
                 }
             }
         }
