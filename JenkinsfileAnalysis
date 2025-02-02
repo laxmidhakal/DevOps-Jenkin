@@ -41,52 +41,41 @@ pipeline {
         //     }
         // }
 
-         stage("Trivy Security Scan") {
+    
+
+
+        stage('Trivy Scan for dockerImage') {
             steps {
-                echo "Running Trivy security scan on Docker image"
-                sh '''
-                    trivy image --exit-code 0 --format json --output trivy-report.json ${DOCKER_IMAGE}:$BUILD_NUMBER
-                    trivy image --exit-code 1 --severity HIGH,CRITICAL ${DOCKER_IMAGE}:$BUILD_NUMBER || echo "Trivy scan found vulnerabilities!"
-                '''
-                
-                archiveArtifacts artifacts: 'trivy-report.json', fingerprint: true
-                echo "Trivy security scan completed"
+                script {
+                    echo "Running Trivy Security Scan..."
+
+                    def trivyOutput = sh(script: "trivy image ${DOCKER_IMAGE}:$BUILD_NUMBER", returnStdout: true).trim()
+
+                    println trivyOutput
+
+                    if (trivyOutput.contains("Total: 0")) {
+                        echo "No vulnerabilities found in the Docker image."
+                    } else {
+                        echo "Vulnerabilities found in the Docker image."
+                    }
+
+                    // Run Trivy scan and fail if HIGH or CRITICAL vulnerabilities exist
+                //    def scanStatus = sh(
+                //    script: "trivy image --exit-code 1 --severity HIGH,CRITICAL ${DOCKER_IMAGE}:$BUILD_NUMBER",
+                //    returnStatus: true
+                //    )
+                //      println trivyOutput
+
+                //    if (scanStatus == 1) {
+                //      echo "Build failed due to HIGH or CRITICAL vulnerabilities!"
+                //     } else {
+                //       echo "No HIGH or CRITICAL vulnerabilities found. Proceeding..."
+                //     }
+
+
+                }
             }
         }
-
-
-        // stage('Trivy Scan for dockerImage') {
-        //     steps {
-        //         script {
-        //             echo "Running Trivy Security Scan..."
-
-        //             def trivyOutput = sh(script: "trivy image ${DOCKER_IMAGE}:$BUILD_NUMBER", returnStdout: true).trim()
-
-        //             println trivyOutput
-
-        //             if (trivyOutput.contains("Total: 0")) {
-        //                 echo "No vulnerabilities found in the Docker image."
-        //             } else {
-        //                 echo "Vulnerabilities found in the Docker image."
-        //             }
-
-        //             // Run Trivy scan and fail if HIGH or CRITICAL vulnerabilities exist
-        //         //    def scanStatus = sh(
-        //         //    script: "trivy image --exit-code 1 --severity HIGH,CRITICAL ${DOCKER_IMAGE}:$BUILD_NUMBER",
-        //         //    returnStatus: true
-        //         //    )
-        //         //      println trivyOutput
-
-        //         //    if (scanStatus == 1) {
-        //         //      echo "Build failed due to HIGH or CRITICAL vulnerabilities!"
-        //         //     } else {
-        //         //       echo "No HIGH or CRITICAL vulnerabilities found. Proceeding..."
-        //         //     }
-
-
-        //         }
-        //     }
-        // }
 
         // stage('Create tar file for Docker Image') {
 
