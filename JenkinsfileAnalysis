@@ -5,7 +5,7 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'laxmidhakal/python-app' 
         ARTIFACT_NAME = 'my-python-app.tar.gz'
-        FILE_NAME = "${DOCKER_IMAGE}:$BUILD_NUMBER}.tar.gz" 
+        FILE_NAME = "python-app_${BUILD_NUMBER}.tar.gz" 
     }
     stages {
 
