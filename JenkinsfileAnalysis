@@ -5,6 +5,7 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'laxmidhakal/python-app' 
         ARTIFACT_NAME = 'my-python-app.tar.gz'
+        FILE_NAME = "${DOCKER_IMAGE}:$BUILD_NUMBER}.tar.gz" 
     }
     stages {
 
@@ -77,9 +78,13 @@ pipeline {
         stage('Create tar file for Docker Image') {
 
             steps {
-                sh "docker save -o './${DOCKER_IMAGE}_${BUILD_NUMBER}.tar' ${DOCKER_IMAGE}:${BUILD_NUMBER}"
+               
 
-                    echo "Docker image saved as ${DOCKER_IMAGE}_${BUILD_NUMBER}.tar"
+                   sh """
+                        docker save ${DOCKER_IMAGE}:${BUILD_NUMBER} -o ${FILE_NAME}
+                        gzip ${FILE_NAME}  // Compress the tar file to .tar.gz
+                    """
+                    echo "Docker image saved and compressed as ${FILE_NAME}"    
             }
             post {
               success {
@@ -103,8 +108,8 @@ pipeline {
                     artifacts: [
                         [artifactId: 'python-sample',
                          classifier: '',
-                         file: 'python.tar',
-                         type: 'tar']
+                         file: FILE_NAME,
+                         type: 'tar.gz']
                     ]
                 )
             }
