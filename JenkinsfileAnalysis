@@ -19,26 +19,26 @@ pipeline {
 
       
 
-        // stage('SonarQube Code Analysis') {
-        //     steps {
-        //         dir("${WORKSPACE}"){
+        stage('SonarQube Code Analysis') {
+            steps {
+                dir("${WORKSPACE}"){
                
-        //          script {
-        //             def scannerHome = tool name: 'sonar7.0', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
-        //             withSonarQubeEnv('sonar') {
-        //                 sh "${scannerHome}/bin/sonar-scanner \
-        //                     -D sonar.projectVersion=1.0-SNAPSHOT \
-        //                     -D sonar.projectName=python-app \
-        //                     -D sonar.projectKey=python-app \
-        //                     -D sonar.sources=. \
-        //                     -D sonar.sourceEncoding=UTF-8 \
-        //                     -D sonar.language=python \
-        //                     -D sonar.host.url=http://192.168.33.10:9000"
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
+                 script {
+                    def scannerHome = tool name: 'sonar7.0', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
+                    withSonarQubeEnv('sonar') {
+                        sh "${scannerHome}/bin/sonar-scanner \
+                            -D sonar.projectVersion=1.0-SNAPSHOT \
+                            -D sonar.projectName=python-app \
+                            -D sonar.projectKey=python-app \
+                            -D sonar.sources=. \
+                            -D sonar.sourceEncoding=UTF-8 \
+                            -D sonar.language=python \
+                            -D sonar.host.url=http://54.174.10.6:9000"
+                        }
+                    }
+                }
+            }
+        }
 
 
         stage('Trivy Scan for dockerImage') {
@@ -78,7 +78,7 @@ pipeline {
 
         //     steps {
         //         sh "docker save -o ${DOCKER_IMAGE}_${BUILD_NUMBER}.tar ${DOCKER_IMAGE}:$BUILD_NUMBER"
-                    // echo "Docker image saved as ${DOCKER_IMAGE}_${BUILD_NUMBER}.tar"
+        //             echo "Docker image saved as ${DOCKER_IMAGE}_${BUILD_NUMBER}.tar"
         //     }
         //     post {
         //       success {
@@ -136,12 +136,7 @@ pipeline {
     }
 
     post { 
-        //   always { 
-        //     mail to: 'laxmidhakal159@gmail.com',
-        //     subject: "Job '${JOB_NAME}' (${BUILD_NUMBER}) is waiting for input",
-        //     body: "Please go to this ${BUILD_URL} and verify the build"
-        //   }
-
+      
         success {
             mail bcc: '', body: """Hello Team,
 
