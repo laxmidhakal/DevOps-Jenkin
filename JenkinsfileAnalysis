@@ -81,15 +81,16 @@ pipeline {
                
 
                    sh """
-                        docker save ${DOCKER_IMAGE}:${BUILD_NUMBER} -o ${FILE_NAME}
+                        docker save ${DOCKER_IMAGE}:${BUILD_NUMBER} -o ${DOCKER_IMAGE}_${BUILD_NUMBER}.tar
+                        gzip ${DOCKER_IMAGE}_${BUILD_NUMBER}.tar  // Compress the tar file to .tar.gz
                         
                     """
-                    echo "Docker image saved and compressed as ${FILE_NAME}"    
+                    echo "Docker image saved and compressed as ${DOCKER_IMAGE}_${BUILD_NUMBER}.tar.gz"   
             }
             post {
               success {
-                 echo 'Now Archiving the Docker Image...'
-                 archiveArtifacts artifacts: "${DOCKER_IMAGE}_${BUILD_NUMBER}.tar"
+                 archiveArtifacts artifacts: "${DOCKER_IMAGE}_${BUILD_NUMBER}.tar.gz", allowEmptyArchive: true
+                echo "Archived Docker image tarball ${DOCKER_IMAGE}_${BUILD_NUMBER}.tar.gz"
                 }
             }
         }
@@ -108,7 +109,7 @@ pipeline {
                     artifacts: [
                         [artifactId: 'python-sample',
                          classifier: '',
-                         file: FILE_NAME,
+                         file: ${DOCKER_IMAGE}:${BUILD_NUMBER},
                          type: 'tar.gz']
                     ]
                 )
