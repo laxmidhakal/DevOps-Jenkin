@@ -1,4 +1,7 @@
 FROM python:3.11-slim
+
+RUN apt-get update && apt-get upgrade -y
+
 WORKDIR /app
 # Create a new user and group
 RUN groupadd -r appgroup && useradd -r -g appgroup appuser
