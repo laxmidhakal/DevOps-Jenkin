@@ -109,7 +109,7 @@ pipeline {
                     artifacts: [
                         [artifactId: 'python-sample',
                          classifier: '',
-                         file: ${DOCKER_IMAGE}:${BUILD_NUMBER},
+                         file: ${DOCKER_IMAGE}_${BUILD_NUMBER},
                          type: 'tar.gz']
                     ]
                 )
