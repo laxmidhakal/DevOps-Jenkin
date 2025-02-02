@@ -1,6 +1,0 @@
--Dsonar.projectKey=python-app \
--Dsonar.projectName=python-app \
--Dsonar.projectVersion=4.0 \
--Dsonar.sources=/src/ \
--Dsonar.junit.reportsPath=target/surefire-reports/ \
--Dsonar.jacoco.reportsPath=target/jacoco.exec \
