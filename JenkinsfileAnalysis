@@ -8,7 +8,7 @@ pipeline {
     }
     stages {
 
-        stage('Create Docker Image') {
+        stage('Build And Create Docker Image') {
             steps {
                 echo "Building Docker image for Python application..."
                 sh '''
@@ -56,14 +56,14 @@ pipeline {
             }
         }
 
-        stage('Build Python App') {
+        stage('Create tar file for Docker Image') {
 
             steps {
                 sh 'tar -czvf python-app.tar.gz *.py'
             }
             post {
               success {
-                 echo 'Now Archiving the Python App...'
+                 echo 'Now Archiving the Docker Image...'
                  archiveArtifacts artifacts: 'python-app.tar.gz'
                 }
             }
@@ -117,11 +117,11 @@ pipeline {
     }
 
     post { 
-          always { 
-            mail to: 'laxmidhakal159@gmail.com',
-            subject: "Job '${JOB_NAME}' (${BUILD_NUMBER}) is waiting for input",
-            body: "Please go to this ${BUILD_URL} and verify the build"
-          }
+        //   always { 
+        //     mail to: 'laxmidhakal159@gmail.com',
+        //     subject: "Job '${JOB_NAME}' (${BUILD_NUMBER}) is waiting for input",
+        //     body: "Please go to this ${BUILD_URL} and verify the build"
+        //   }
 
         success {
             mail bcc: '', body: """Hello Team,
