@@ -100,8 +100,8 @@ pipeline {
         //             artifacts: [
         //                 [artifactId: 'python-sample',
         //                  classifier: '',
-        //                  file: 'python-app.tar.gz',
-        //                  type: 'tar.gz']
+        //                  file: 'python.tar',
+        //                  type: 'tar']
         //             ]
         //         )
         //     }
