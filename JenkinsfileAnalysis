@@ -74,40 +74,40 @@ pipeline {
             }
         }
 
-        // stage('Create tar file for Docker Image') {
+        stage('Create tar file for Docker Image') {
 
-        //     steps {
-        //         sh "docker save -o ${DOCKER_IMAGE}_${BUILD_NUMBER}.tar ${DOCKER_IMAGE}:$BUILD_NUMBER"
-        //             echo "Docker image saved as ${DOCKER_IMAGE}_${BUILD_NUMBER}.tar"
-        //     }
-        //     post {
-        //       success {
-        //          echo 'Now Archiving the Docker Image...'
-        //          archiveArtifacts artifacts: "${DOCKER_IMAGE}_${BUILD_NUMBER}.tar"
-        //         }
-        //     }
-        // }
+            steps {
+                sh "docker save -o ${DOCKER_IMAGE}_${BUILD_NUMBER}.tar ${DOCKER_IMAGE}:$BUILD_NUMBER"
+                    echo "Docker image saved as ${DOCKER_IMAGE}_${BUILD_NUMBER}.tar"
+            }
+            post {
+              success {
+                 echo 'Now Archiving the Docker Image...'
+                 archiveArtifacts artifacts: "${DOCKER_IMAGE}_${BUILD_NUMBER}.tar"
+                }
+            }
+        }
 
-        // stage('Upload to Nexus') {
-        //     steps {
-        //         nexusArtifactUploader(
-        //             nexusVersion: 'nexus3',
-        //             protocol: 'http',
-        //             nexusUrl: "18.209.45.35:8081",
-        //             groupId: 'QA',
-        //             version: '1.0.0',
-        //             repository: "my-python-repo",
-        //             credentialsId: "nexus-credentials",
+        stage('Upload to Nexus') {
+            steps {
+                nexusArtifactUploader(
+                    nexusVersion: 'nexus3',
+                    protocol: 'http',
+                    nexusUrl: "3.80.61.59:8081",
+                    groupId: 'QA',
+                    version: '1.0.0',
+                    repository: "my-python-repo",
+                    credentialsId: "nexus-credentials",
 
-        //             artifacts: [
-        //                 [artifactId: 'python-sample',
-        //                  classifier: '',
-        //                  file: 'python.tar',
-        //                  type: 'tar']
-        //             ]
-        //         )
-        //     }
-        // }
+                    artifacts: [
+                        [artifactId: 'python-sample',
+                         classifier: '',
+                         file: 'python.tar',
+                         type: 'tar']
+                    ]
+                )
+            }
+        }
 
         stage('Push to Docker Hub') {
             steps {
