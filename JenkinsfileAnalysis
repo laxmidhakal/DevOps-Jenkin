@@ -81,7 +81,7 @@ pipeline {
             post {
               success {
                  echo 'Now Archiving the Docker Image...'
-                 archiveArtifacts artifacts: 'python.tar.gz'
+                 archiveArtifacts artifacts: 'python.tar'
                 }
             }
         }
