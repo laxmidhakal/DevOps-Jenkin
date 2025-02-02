@@ -20,26 +20,26 @@ pipeline {
 
       
 
-        stage('SonarQube Code Analysis') {
-            steps {
-                dir("${WORKSPACE}"){
+        // stage('SonarQube Code Analysis') {
+        //     steps {
+        //         dir("${WORKSPACE}"){
                
-                 script {
-                    def scannerHome = tool name: 'sonar7.0', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
-                    withSonarQubeEnv('sonar') {
-                        sh "${scannerHome}/bin/sonar-scanner \
-                            -D sonar.projectVersion=1.0-SNAPSHOT \
-                            -D sonar.projectName=python-app \
-                            -D sonar.projectKey=python-app \
-                            -D sonar.sources=. \
-                            -D sonar.sourceEncoding=UTF-8 \
-                            -D sonar.language=python \
-                            -D sonar.host.url=http://54.174.10.6:9000"
-                        }
-                    }
-                }
-            }
-        }
+        //          script {
+        //             def scannerHome = tool name: 'sonar7.0', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
+        //             withSonarQubeEnv('sonar') {
+        //                 sh "${scannerHome}/bin/sonar-scanner \
+        //                     -D sonar.projectVersion=1.0-SNAPSHOT \
+        //                     -D sonar.projectName=python-app \
+        //                     -D sonar.projectKey=python-app \
+        //                     -D sonar.sources=. \
+        //                     -D sonar.sourceEncoding=UTF-8 \
+        //                     -D sonar.language=python \
+        //                     -D sonar.host.url=http://54.174.10.6:9000"
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
 
 
         stage('Trivy Scan for dockerImage') {
@@ -75,46 +75,46 @@ pipeline {
             }
         }
 
-        stage('Create tar file for Docker Image') {
+        // stage('Create tar file for Docker Image') {
 
-            steps {
+        //     steps {
                
 
-                   sh """
-                        docker save ${DOCKER_IMAGE}:${BUILD_NUMBER} -o ${DOCKER_IMAGE}_${BUILD_NUMBER}.tar
-                        gzip ${DOCKER_IMAGE}_${BUILD_NUMBER}.tar  // Compress the tar file to .tar.gz
+        //            sh """
+        //                 docker save ${DOCKER_IMAGE}:${BUILD_NUMBER} -o ${DOCKER_IMAGE}_${BUILD_NUMBER}.tar
+        //                 gzip ${DOCKER_IMAGE}_${BUILD_NUMBER}.tar  // Compress the tar file to .tar.gz
                         
-                    """
-                    echo "Docker image saved and compressed as ${DOCKER_IMAGE}_${BUILD_NUMBER}.tar.gz"   
-            }
-            post {
-              success {
-                 archiveArtifacts artifacts: "${DOCKER_IMAGE}_${BUILD_NUMBER}.tar.gz", allowEmptyArchive: true
-                echo "Archived Docker image tarball ${DOCKER_IMAGE}_${BUILD_NUMBER}.tar.gz"
-                }
-            }
-        }
+        //             """
+        //             echo "Docker image saved and compressed as ${DOCKER_IMAGE}_${BUILD_NUMBER}.tar.gz"   
+        //     }
+        //     post {
+        //       success {
+        //          archiveArtifacts artifacts: "${DOCKER_IMAGE}_${BUILD_NUMBER}.tar.gz", allowEmptyArchive: true
+        //         echo "Archived Docker image tarball ${DOCKER_IMAGE}_${BUILD_NUMBER}.tar.gz"
+        //         }
+        //     }
+        // }
 
-        stage('Upload to Nexus') {
-            steps {
-                nexusArtifactUploader(
-                    nexusVersion: 'nexus3',
-                    protocol: 'http',
-                    nexusUrl: "3.80.61.59:8081",
-                    groupId: 'QA',
-                    version: '1.0.0',
-                    repository: "my-python-repo",
-                    credentialsId: "nexus-credentials",
+        // stage('Upload to Nexus') {
+        //     steps {
+        //         nexusArtifactUploader(
+        //             nexusVersion: 'nexus3',
+        //             protocol: 'http',
+        //             nexusUrl: "3.80.61.59:8081",
+        //             groupId: 'QA',
+        //             version: '1.0.0',
+        //             repository: "my-python-repo",
+        //             credentialsId: "nexus-credentials",
 
-                    artifacts: [
-                        [artifactId: 'python-sample',
-                         classifier: '',
-                         file: "${DOCKER_IMAGE}_${BUILD_NUMBER}",
-                         type: 'tar.gz']
-                    ]
-                )
-            }
-        }
+        //             artifacts: [
+        //                 [artifactId: 'python-sample',
+        //                  classifier: '',
+        //                  file: "${DOCKER_IMAGE}_${BUILD_NUMBER}",
+        //                  type: 'tar.gz']
+        //             ]
+        //         )
+        //     }
+        // }
 
         stage('Push to Docker Hub') {
             steps {
