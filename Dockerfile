@@ -1,34 +1,26 @@
 # Use Python 3.7 Alpine as the base image
 FROM python:3.7-alpine
 
-# # Set environment variables
-# ENV PYTHONUNBUFFERED=1 \
-#     PYTHONHASHSEED=random
+# Set environment variables to ensure Python output is not buffered
+ENV PYTHONUNBUFFERED=1
 
-# Install necessary utilities (groupadd, useradd) and update packages
-RUN apk update && apk upgrade && apk add --no-cache \
-    shadow \
-    && rm -rf /var/cache/apk/*
+# Install system dependencies for building Python packages
+RUN apk update && apk add --no-cache build-base
 
-# Create a non-root user and group
-RUN groupadd -r appgroup && useradd -r -g appgroup -m appuser
-
-# Set the working directory
+# Set the working directory in the container
 WORKDIR /app
 
-# Securely copy requirements and install dependencies
+# Copy the requirements file into the container
 COPY requirements.txt .
-RUN pip install -r requirements.txt
 
-# Copy the application code
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the application code into the container
 COPY . .
 
-# Change ownership of the application directory
-RUN chown -R appuser:appgroup /app
-USER appuser
-
-# Expose the application port
+# Expose the port the app runs on
 EXPOSE 5000
 
-# Run the Python application
+# Run the Python app
 CMD ["python", "app.py"]

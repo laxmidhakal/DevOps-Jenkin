@@ -1,4 +1,1 @@
-flask
-pip install --upgrade Werkzeug==3.0.3
-pip install --upgrade setuptools==70.0.0
-
+Flask==2.2.3
