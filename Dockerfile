@@ -1,9 +1,9 @@
 # Use Python 3.7 Alpine as the base image
 FROM python:3.7-alpine
 
-# Set environment variables
-ENV PYTHONUNBUFFERED=1 \
-    PYTHONHASHSEED=random
+# # Set environment variables
+# ENV PYTHONUNBUFFERED=1 \
+#     PYTHONHASHSEED=random
 
 # Install necessary utilities (groupadd, useradd) and update packages
 RUN apk update && apk upgrade && apk add --no-cache \
@@ -18,7 +18,7 @@ WORKDIR /app
 
 # Securely copy requirements and install dependencies
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install -r requirements.txt
 
 # Copy the application code
 COPY . .
