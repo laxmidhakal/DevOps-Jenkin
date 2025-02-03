@@ -1,27 +1,29 @@
-FROM python:3.12-slim-bookworm
+# Use a minimal, secure base image
+FROM python:3.12.1-alpine
 
-# Set up a non-root user
-RUN groupadd -r appgroup && useradd -r -g appgroup appuser
+# Set environment variables for security
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONHASHSEED=random
+
+# Create a non-root user
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
 WORKDIR /app
 
-# Securely update system packages
-RUN apt-get update && apt-get upgrade -y && apt-get dist-upgrade -y \
-    && apt-get install -y --no-install-recommends \
-    && apt-get autoremove -y && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
-
-# Upgrade pip and install dependencies
+# Install dependencies securely
 COPY requirements.txt .
 RUN python -m pip install --upgrade pip \
     && pip install --no-cache-dir -r requirements.txt
 
-# Copy application files
+# Copy application code
 COPY . .
 
-# Set ownership and switch user
+# Set permissions and switch to non-root user
 RUN chown -R appuser:appgroup /app
 USER appuser
 
+# Expose the application port
 EXPOSE 5000
+
+# Run securely
 CMD ["python", "app.py"]
