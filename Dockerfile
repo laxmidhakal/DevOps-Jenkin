@@ -1,4 +1,4 @@
-FROM python:3.11-slim
+FROM python:latest
 
 RUN apt-get update && apt-get upgrade -y
 
