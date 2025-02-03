@@ -1,8 +1,15 @@
 FROM python:3.7-alpine
 
-WORKDIR /app
+RUN apk update && apk add --no-cache \
+    shadow \
+    && rm -rf /var/cache/apk/*
 # Create a new user and group
-RUN groupadd -r appgroup && useradd -r -g appgroup appuser
+# RUN groupadd -r appgroup && useradd -r -g appgroup appuser
+RUN groupadd -r appgroup && useradd -r -g appgroup -m appuser
+
+WORKDIR /app
+
+
 
 
 COPY requirements.txt .
@@ -11,10 +18,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-# Change ownership of the application directory
+# Set permissions and switch to the non-root user
 RUN chown -R appuser:appgroup /app
-
-# Switch to the non-root user
 USER appuser
 
 EXPOSE 5000
