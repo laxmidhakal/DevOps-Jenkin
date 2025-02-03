@@ -49,28 +49,28 @@ pipeline {
                 script {
                     echo "Running Trivy Security Scan..."
 
-                    def trivyOutput = sh(script: "trivy image ${DOCKER_IMAGE}:$BUILD_NUMBER", returnStdout: true).trim()
+                    // def trivyOutput = sh(script: "trivy image ${DOCKER_IMAGE}:$BUILD_NUMBER", returnStdout: true).trim()
 
-                    println trivyOutput
+                    // println trivyOutput
 
-                    if (trivyOutput.contains("Total: 0")) {
-                        echo "No vulnerabilities found in the Docker image."
-                    } else {
-                        echo "Vulnerabilities found in the Docker image."
-                    }
+                    // if (trivyOutput.contains("Total: 0")) {
+                    //     echo "No vulnerabilities found in the Docker image."
+                    // } else {
+                    //     echo "Vulnerabilities found in the Docker image."
+                    // }
 
                     // Run Trivy scan and fail if HIGH or CRITICAL vulnerabilities exist
-                //    def scanStatus = sh(
-                //    script: "trivy image --exit-code 1 --severity HIGH,CRITICAL ${DOCKER_IMAGE}:$BUILD_NUMBER",
-                //    returnStatus: true
-                //    )
-                //      println trivyOutput
+                   def scanStatus = sh(
+                   script: "trivy image --exit-code 1 --severity HIGH,CRITICAL ${DOCKER_IMAGE}:$BUILD_NUMBER",
+                   returnStatus: true
+                   )
+                     println trivyOutput
 
-                //    if (scanStatus == 1) {
-                //      echo "Build failed due to HIGH or CRITICAL vulnerabilities!"
-                //     } else {
-                //       echo "No HIGH or CRITICAL vulnerabilities found. Proceeding..."
-                //     }
+                   if (scanStatus == 1) {
+                     echo "Build failed due to HIGH or CRITICAL vulnerabilities!"
+                    } else {
+                      echo "No HIGH or CRITICAL vulnerabilities found. Proceeding..."
+                    }
 
 
                 }
@@ -118,30 +118,30 @@ pipeline {
         //     }
         // }
 
-        stage('Push to Docker Hub') {
-            steps {
-                echo "Logging into Docker Hub..."
-                withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                    sh '''
-                    echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
-                    docker images
-                    '''
-                }
-                echo "Pushing Docker image to Docker Hub..."
-                sh '''
-                docker push ${DOCKER_IMAGE}:$BUILD_NUMBER
-                '''
-            }
-        }
+        // stage('Push to Docker Hub') {
+        //     steps {
+        //         echo "Logging into Docker Hub..."
+        //         withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+        //             sh '''
+        //             echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+        //             docker images
+        //             '''
+        //         }
+        //         echo "Pushing Docker image to Docker Hub..."
+        //         sh '''
+        //         docker push ${DOCKER_IMAGE}:$BUILD_NUMBER
+        //         '''
+        //     }
+        // }
 
-        stage('Deploy To Staging') {
-            steps {
-                echo "Starting containers with Docker Compose..."
-                sh '''
-                docker compose up -d
-                '''
-            }
-        }
+        // stage('Deploy To Staging') {
+        //     steps {
+        //         echo "Starting containers with Docker Compose..."
+        //         sh '''
+        //         docker compose up -d
+        //         '''
+        //     }
+        // }
     }
 
     post { 
