@@ -7,11 +7,11 @@ ENV PYTHONUNBUFFERED=1
 # Set a working directory
 WORKDIR /app
 
-# Install only necessary system dependencies
+# Install necessary system dependencies
 RUN apk add --no-cache gcc musl-dev libffi-dev openssl-dev
 
-# Upgrade pip to the latest secure version
-RUN pip install --upgrade pip
+# Upgrade pip and setuptools to secure versions
+RUN pip install --upgrade pip setuptools==70.0.0
 
 # Copy only requirements first (to leverage Docker caching)
 COPY requirements.txt .
