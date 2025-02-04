@@ -1,42 +1,30 @@
-# Use a secure base image (Latest stable Python with Alpine)
-FROM python:3.10-alpine AS builder
+# Use a secure and up-to-date Python base image
+FROM python:3.11-alpine
 
-# Set environment variables for better security and logging
+# Set environment variables
 ENV PYTHONUNBUFFERED=1
 
 # Set a working directory
 WORKDIR /app
 
-# Install system dependencies (only required for building)
-RUN apk add --no-cache \
-    build-base \
-    libffi-dev \
-    openssl-dev \
-    musl-dev \
-    && pip install --upgrade pip setuptools wheel
+# Install only necessary system dependencies
+RUN apk add --no-cache gcc musl-dev libffi-dev openssl-dev
 
-# Copy requirements file and install dependencies
+# Upgrade pip to the latest secure version
+RUN pip install --upgrade pip
+
+# Copy only requirements first (to leverage Docker caching)
 COPY requirements.txt .
+
+# Install Python dependencies securely
 RUN pip install --no-cache-dir -r requirements.txt
 
-# -----------------------------------------
-# Create a smaller final image (Runtime only)
-# -----------------------------------------
-FROM python:3.10-alpine AS final
-
-# Set working directory
-WORKDIR /app
-
-# Copy installed dependencies from builder stage
-COPY --from=builder /usr/local/lib/python3.10 /usr/local/lib/python3.10
-COPY --from=builder /usr/local/bin /usr/local/bin
-
-# Copy application source code
+# Copy the application source code
 COPY . .
 
-# Create and switch to a non-root user
-RUN adduser -D myuser
-USER myuser
+# Create and switch to a non-root user for security
+RUN adduser -D appuser
+USER appuser
 
 # Expose the application port
 EXPOSE 5000
