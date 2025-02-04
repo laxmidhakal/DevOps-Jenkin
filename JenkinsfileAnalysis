@@ -128,7 +128,8 @@ pipeline {
             steps {
                 echo "Starting containers with Docker Compose..."
                 sh '''
-                docker compose up -d
+                docker compose up --build -d
+                
                 '''
             }
         }
