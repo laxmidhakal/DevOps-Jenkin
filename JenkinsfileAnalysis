@@ -65,17 +65,9 @@ pipeline {
                    returnStatus: true
                    )
 
-                  def trivyOutput = sh(
-                   script: "trivy image --severity HIGH,CRITICAL ${DOCKER_IMAGE}:${BUILD_NUMBER}",
-                  returnStdout: true
-                  ).trim()
-
-// Print the output from the Trivy scan
-                  println trivyOutput
-
                   if (scanStatus == 1) {
                      echo "❌ Build failed due to HIGH or CRITICAL vulnerabilities!"
-                     currentBuild.result = 'FAILURE'  // Optional: Explicitly mark the build as failed
+                     currentBuild.result = 'FAILURE' 
                   } else {
                     echo "✅ No HIGH or CRITICAL vulnerabilities found. Proceeding..."
                    }
