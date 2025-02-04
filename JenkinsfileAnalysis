@@ -61,16 +61,26 @@ pipeline {
 
                     // Run Trivy scan and fail if HIGH or CRITICAL vulnerabilities exist
                    def scanStatus = sh(
-                   script: "trivy image --exit-code 1 --severity HIGH,CRITICAL ${DOCKER_IMAGE}:$BUILD_NUMBER",
+                     script: "trivy image --exit-code 1 --severity HIGH,CRITICAL ${DOCKER_IMAGE}:${BUILD_NUMBER}",
                    returnStatus: true
                    )
-                     println trivyOutput
 
-                   if (scanStatus == 1) {
-                     echo "Build failed due to HIGH or CRITICAL vulnerabilities!"
-                    } else {
-                      echo "No HIGH or CRITICAL vulnerabilities found. Proceeding..."
-                    }
+                  def trivyOutput = sh(
+                   script: "trivy image --severity HIGH,CRITICAL ${DOCKER_IMAGE}:${BUILD_NUMBER}",
+                  returnStdout: true
+                  ).trim()
+
+// Print the output from the Trivy scan
+                  println trivyOutput
+
+                  if (scanStatus == 1) {
+                     echo "❌ Build failed due to HIGH or CRITICAL vulnerabilities!"
+                     currentBuild.result = 'FAILURE'  // Optional: Explicitly mark the build as failed
+                  } else {
+                    echo "✅ No HIGH or CRITICAL vulnerabilities found. Proceeding..."
+                   }
+
+               
 
 
                 }
@@ -118,21 +128,21 @@ pipeline {
         //     }
         // }
 
-        stage('Push to Docker Hub') {
-            steps {
-                echo "Logging into Docker Hub..."
-                withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                    sh '''
-                    echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
-                    docker images
-                    '''
-                }
-                echo "Pushing Docker image to Docker Hub..."
-                sh '''
-                docker push ${DOCKER_IMAGE}:$BUILD_NUMBER
-                '''
-            }
-        }
+        // stage('Push to Docker Hub') {
+        //     steps {
+        //         echo "Logging into Docker Hub..."
+        //         withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+        //             sh '''
+        //             echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+        //             docker images
+        //             '''
+        //         }
+        //         echo "Pushing Docker image to Docker Hub..."
+        //         sh '''
+        //         docker push ${DOCKER_IMAGE}:$BUILD_NUMBER
+        //         '''
+        //     }
+        // }
 
         // stage('Deploy To Staging') {
         //     steps {
