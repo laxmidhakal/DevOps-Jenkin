@@ -2,13 +2,13 @@
 FROM python:3.11-alpine
 
 # Set environment variables
-ENV PYTHONUNBUFFERED=1
+# ENV PYTHONUNBUFFERED=1
 
 # Set a working directory
 WORKDIR /app
 
 # Install necessary system dependencies
-RUN apk add --no-cache gcc musl-dev libffi-dev openssl-dev
+# RUN apk add --no-cache gcc musl-dev libffi-dev openssl-dev
 
 # Upgrade pip and setuptools to secure versions
 RUN pip install --upgrade pip setuptools==70.0.0
