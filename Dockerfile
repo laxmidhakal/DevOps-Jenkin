@@ -5,7 +5,7 @@ FROM python:3.11-alpine
 WORKDIR /app
 
 # Upgrade pip and setuptools to secure versions
-# RUN pip install --upgrade pip setuptools==70.0.0
+RUN pip install --upgrade pip setuptools==70.0.0
 
 # Copy only requirements first (to leverage Docker caching)
 COPY requirements.txt .
